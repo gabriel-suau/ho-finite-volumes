@@ -72,7 +72,7 @@ int HOFV_setupMethod(HOFV_Problem *problem) {
 int HOFV_setupCase(HOFV_Problem *p) {
   HOFV_Info *info;
   int k, nx;
-  double x, mid, third, midt, thirdt, *tmp_mesh, r1, r2, r3;
+  double x, mid, third, *tmp_mesh, r1, r2, r3;
   double xmin, xmax, dx;
   double xmint, xmaxt, dxt;
   double x1, x2, x3;
@@ -87,7 +87,7 @@ int HOFV_setupCase(HOFV_Problem *p) {
   dx = info->dx;
   nx = info->nx;
   r1 = 1.0;
-  r2 = 0.01;
+  r2 = 0.9;
   r3 = 1.0;
 
   tmp_mesh = (double*) calloc(nx, sizeof(double));
@@ -108,14 +108,6 @@ int HOFV_setupCase(HOFV_Problem *p) {
         p->rho[k] = r3;
     }
     p->S = 1.0;
-    /* Initial condition */
-    for (k = 0 ; k < nx ; k++) {
-      x = p->cc[k];
-      p->u[2 * k] = (x < mid) ? 0.5 : 3.0;
-      p->u[2 * k + 1] = 0.0;
-      HOFV_priToCons(p->rho[k], p->S, &p->u[2 * k], &p->u[2 * k]);
-      memcpy(&p->uex[2 * k], &p->u[2 * k], 2 * sizeof(double));
-    }
     break;
 
   default:
@@ -137,8 +129,6 @@ int HOFV_setupCase(HOFV_Problem *p) {
     }
 
     dxt = (xmaxt - xmint) / nx;
-    thirdt = 0.3 * xmaxt;
-    midt = 0.5 * xmaxt;
 
     for (k = 0 ; k < nx ; k++) {
       tmp_mesh[k] = xmint + (k + 0.5) * dxt;
@@ -174,10 +164,20 @@ int HOFV_setupCase(HOFV_Problem *p) {
 
     info->dx = dxt;
     info->de_over_dx = info->de / dxt;
+
     break;
 
   default:
     break;
+  }
+
+  /* Initial condition */
+  for (k = 0 ; k < nx ; k++) {
+    x = p->cc[k];
+    p->u[2 * k] = (x < mid) ? 0.5 : 3.0;
+    p->u[2 * k + 1] = 0.0;
+    HOFV_priToCons(p->rho[k], p->S, &p->u[2 * k], &p->u[2 * k]);
+    memcpy(&p->uex[2 * k], &p->u[2 * k], 2 * sizeof(double));
   }
 
   return HOFV_SUCCESS;

@@ -3,7 +3,7 @@
 int HOFV_readParameters(HOFV_Problem *problem, char *filename) {
   HOFV_Info *info;
   FILE *file = NULL;
-  char chain[127];
+  char chain[127], tmp[127];
 
   if (problem == NULL) {
     fprintf(stderr, "Error: %s: Problem struct not allocated\n", __func__);
@@ -36,7 +36,9 @@ int HOFV_readParameters(HOFV_Problem *problem, char *filename) {
     if (chain[0] == '#') continue;
 
     if (!strncmp(chain, "OutputDir", strlen("OutputDir"))) {
-      fscanf(file, "%s", info->outdir);
+      fscanf(file, "%s", tmp);
+      info->outdir = (char*) malloc(strlen(tmp) * sizeof(char));
+      strcpy(info->outdir, tmp);
       continue;
     }
 
@@ -240,6 +242,7 @@ int HOFV_printParameters(HOFV_Problem *problem) {
   fprintf(stdout, "  |CFL     = %f \n", info->cfl);
   fprintf(stdout, "Left BC    : %s\n", HOFV_BC_to_string(info->left_bc));
   fprintf(stdout, "Right BC   : %s\n", HOFV_BC_to_string(info->right_bc));
+  fprintf(stdout, "OutDir     : %s\n", info->outdir);
   fprintf(stdout, "%s\n", HOFV_STR);
 
   return HOFV_SUCCESS;

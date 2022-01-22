@@ -11,10 +11,10 @@ OutputDir
 results
 
 SaveFinalTimeOnly
-1
+0
 
 SaveFrequency
-500
+5
 
 
 #############################################
@@ -42,7 +42,7 @@ xmin
 xmax
 1.0
 NCells
-512
+256
 
 # Possible values
 #    1 : Base
@@ -63,7 +63,7 @@ EnergyScheme
 1
 
 emin
-1.8
+1.5
 emax
 2.0
 EnergyStep

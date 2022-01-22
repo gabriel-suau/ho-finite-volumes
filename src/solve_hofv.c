@@ -40,24 +40,43 @@ int HOFV_estep(HOFV_Problem *problem) {
 
 int HOFV_solve(HOFV_Problem *problem) {
   HOFV_Info *info;
-  char *filename;
+  char filename[128];
   double e;
-  int n;
+  int iter;
 
   info = problem->info;
   e = info->emax;
-  n = 0;
+  iter = 0;
 
   /* Save the initial solution */
-  HOFV_saveSol(problem, "init.dat");
+  sprintf(filename, "%s/solution_%s_%s_%d.dat",
+          info->outdir,
+          HOFV_NF_to_string(info->numflux),
+          HOFV_MET_to_string(info->method),
+          0);
+  HOFV_saveSol(problem, filename);
 
   while (e > info->emin) {
     HOFV_estep(problem);
     e -= info->de;
+    iter++;
+    if (iter % info->saveFreq == 0) {
+      sprintf(filename, "%s/solution_%s_%s_%d.dat",
+              info->outdir,
+              HOFV_NF_to_string(info->numflux),
+              HOFV_MET_to_string(info->method),
+              iter / info->saveFreq);
+      HOFV_saveSol(problem, filename);
+    }
   }
 
   if (info->saveFTOnly) {
-    HOFV_saveSol(problem, "caca.dat");
+    sprintf(filename, "%s/solution_%s_%s_%d.dat",
+            info->outdir,
+            HOFV_NF_to_string(info->numflux),
+            HOFV_MET_to_string(info->method),
+            1);
+    HOFV_saveSol(problem, filename);
   }
 
   return HOFV_SUCCESS;

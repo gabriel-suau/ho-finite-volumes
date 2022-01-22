@@ -113,8 +113,8 @@ int HOFV_numFlux_rusanov(const double ul[2], const double ur[2], double flux[2])
 
   HOFV_waveSpeeds(ul, ur, &s1, &s2);
 
-  b = HOFV_MAX(HOFV_ABS(s1), HOFV_ABS(s2));
-  /* b = 1.0; */
+  /* b = HOFV_MAX(HOFV_ABS(s1), HOFV_ABS(s2)); */
+  b = 1.0;
 
   flux[0] = 0.5 * (fl[0] + fr[0] - b * (ur[0] - ul[0]));
   flux[1] = 0.5 * (fl[1] + fr[1] - b * (ur[1] - ul[1]));
