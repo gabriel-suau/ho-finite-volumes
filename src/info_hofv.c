@@ -24,7 +24,12 @@ int HOFV_readParameters(HOFV_Problem *problem, char *filename) {
 
   printf("## File %s opened\n", filename);
 
-  info->filename = filename;
+  info->filename = (char*) malloc((strlen(filename) + 1) * sizeof(char));  
+  if (info->filename == NULL) {
+    fprintf(stderr, "Empty filename \n");
+    return HOFV_FAILURE;
+  }
+  strcpy(info->filename, filename);
 
   while (fscanf(file, "%s", chain) != EOF) {
 
@@ -42,11 +47,6 @@ int HOFV_readParameters(HOFV_Problem *problem, char *filename) {
 
     else if (!strncmp(chain, "SaveFrequency", strlen("SaveFrequency"))) {
       fscanf(file, "%d", &info->saveFreq);
-      continue;
-    }
-
-    else if (!strncmp(chain, "Model", strlen("Model"))) {
-      fscanf(file, "%d", &info->model);
       continue;
     }
 
@@ -80,7 +80,12 @@ int HOFV_readParameters(HOFV_Problem *problem, char *filename) {
       continue;
     }
 
-    else if (!strncmp(chain, "NumericalFlux", strlen("NumericalFlux"))) {
+    else if (!strncmp(chain, "Method", strlen("Method"))) {
+      fscanf(file, "%d", &info->method);
+      continue;
+    }
+
+    else if (!strncmp(chain, "NumFlux", strlen("NumFlux"))) {
       fscanf(file, "%d", &info->numflux);
       continue;
     }
@@ -140,10 +145,16 @@ int HOFV_chkParameters(HOFV_Problem *problem) {
 
   if (!info->saveFreq) info->saveFTOnly = 1;
 
-  if (info->model != HOFV_MOD_Base &&
-      info->model != HOFV_MOD_CV &&
-      info->model != HOFV_MOD_Proj) {
-    fprintf(stderr, "## Error : %s:%d : Model not implemented.\n", __func__, __LINE__);
+  if (info->method != HOFV_MET_Base &&
+      info->method != HOFV_MET_CV &&
+      info->method != HOFV_MET_Proj) {
+    fprintf(stderr, "## Error : %s:%d : Method not implemented.\n", __func__, __LINE__);
+    return HOFV_FAILURE;
+  }
+
+  if (info->numflux != HOFV_NF_Rus &&
+      info->numflux != HOFV_NF_HLL) {
+    fprintf(stderr, "## Error : %s:%d : Numerical flux not implemented.\n", __func__, __LINE__);
     return HOFV_FAILURE;
   }
 
@@ -177,12 +188,6 @@ int HOFV_chkParameters(HOFV_Problem *problem) {
     return HOFV_FAILURE;
   }
 
-  if (info->numflux != HOFV_NF_Rusanov &&
-      info->numflux != HOFV_NF_HLL) {
-    fprintf(stderr, "## Error : %s:%d : Numerical flux not implemented.\n", __func__, __LINE__);
-    return HOFV_FAILURE;
-  }
-
   if (info->escheme != HOFV_TS_EE) {
     fprintf(stderr, "## Error : %s:%d : Energy scheme not implemented.\n", __func__, __LINE__);
     return HOFV_FAILURE;
@@ -205,6 +210,8 @@ int HOFV_chkParameters(HOFV_Problem *problem) {
     return HOFV_FAILURE;    
   }
 
+  info->de_over_dx = info->de / info->dx;
+
   return HOFV_SUCCESS;
 }
 
@@ -218,14 +225,14 @@ int HOFV_printParameters(HOFV_Problem *problem) {
 
   fprintf(stdout, "%s\n", HOFV_STR);
   fprintf(stdout, "Printing parameters of: %s\n", info->filename);
-  fprintf(stdout, "Model      : %s\n", HOFV_MOD_to_string(info->model));
+  fprintf(stdout, "Method     : %s\n", HOFV_MET_to_string(info->method));
+  fprintf(stdout, "Numflux    : %s\n", HOFV_NF_to_string(info->numflux));
   fprintf(stdout, "Test case  : %s\n", HOFV_TC_to_string(info->tcase));
   fprintf(stdout, "Mesh : \n");
   fprintf(stdout, "  |xmin    = %f \n", info->xmin);
   fprintf(stdout, "  |xmax    = %f \n", info->xmax);
   fprintf(stdout, "  |nx      = %d \n", info->nx);
   fprintf(stdout, "  |dx      = %f \n", info->dx);
-  fprintf(stdout, "NumFlux    : %s\n", HOFV_NF_to_string(info->numflux));
   fprintf(stdout, "EScheme    : %s\n", HOFV_TS_to_string(info->escheme));
   fprintf(stdout, "  |emin    = %f \n", info->emin);
   fprintf(stdout, "  |emax    = %f \n", info->emax);

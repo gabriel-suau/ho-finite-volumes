@@ -32,11 +32,17 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  /** Set the appropriate function pointers */
-  HOFV_setFunc(problem);
+  /** Setup the simulation */
+  HOFV_setupMesh(problem);
+  HOFV_setupMethod(problem);
+  HOFV_setupCase(problem);
 
-  /** Set the initial solution */
-  HOFV_setInitialCondition(problem);
+  /** Solve the problem */
+  HOFV_solve(problem);
+
+  /** Free the memory */
+  HOFV_Free_Problem(problem);
+  free(filename);
 
   return EXIT_SUCCESS;
 }

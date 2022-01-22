@@ -24,6 +24,11 @@ int HOFV_Free_Problem(HOFV_Problem *problem) {
     return HOFV_SUCCESS;
   }
 
+  if (problem->cc) {
+    free(problem->cc);
+    problem->cc = NULL;
+  }
+
   if (problem->u) {
     free(problem->u);
     problem->u = NULL;
@@ -64,10 +69,10 @@ int HOFV_allocProblem(HOFV_Problem *problem) {
 
   assert(problem && problem->info);
 
-  problem->cc  = (double*)calloc(2 * problem->info->nx, sizeof(double));
+  problem->cc  = (double*)calloc(problem->info->nx, sizeof(double));
   problem->u   = (double*)calloc(2 * problem->info->nx, sizeof(double));
   problem->uex = (double*)calloc(2 * problem->info->nx, sizeof(double));
-  problem->rho = (double*)calloc(2 * problem->info->nx, sizeof(double));
+  problem->rho = (double*)calloc(problem->info->nx, sizeof(double));
 
   return HOFV_SUCCESS;
 }

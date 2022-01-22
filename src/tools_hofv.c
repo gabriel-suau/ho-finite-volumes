@@ -1,12 +1,29 @@
 #include "hofv.h"
 
-const char* HOFV_MOD_to_string(int code) {
+const char* HOFV_MET_to_string(int code) {
   switch(code) {
-  case HOFV_MOD_Base:
+  case HOFV_MET_Base:
     return "Base";
     break;
-  case HOFV_MOD_CV:
+  case HOFV_MET_CV:
     return "CV";
+    break;
+  case HOFV_MET_Proj:
+    return "Proj";
+    break;
+  default:
+    return "None";
+    break;
+  }
+}
+
+const char* HOFV_NF_to_string(int code) {
+  switch(code) {
+  case HOFV_NF_Rus:
+    return "Rusanov";
+    break;
+  case HOFV_NF_HLL:
+    return "HLL";
     break;
   default:
     return "None";
@@ -18,20 +35,6 @@ const char* HOFV_TS_to_string(int code) {
   switch(code) {
   case HOFV_TS_EE:
     return "ExplicitEuler";
-    break;
-  default:
-    return "None";
-    break;
-  }
-}
-
-const char* HOFV_NF_to_string(int code) {
-  switch(code) {
-  case HOFV_NF_Rusanov:
-    return "Rusanov";
-    break;
-  case HOFV_NF_HLL:
-    return "HLL";
     break;
   default:
     return "None";

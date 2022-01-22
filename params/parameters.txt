@@ -17,16 +17,9 @@ SaveFrequency
 500
 
 
-###################################################
-###         Model/Test case selection           ###
-###################################################
-
-# Possible values
-#    1 : Base
-#    2 : CV
-#    3 : CV_proj
-Model
-1
+#############################################
+###         Test case selection           ###
+#############################################
 
 # Possible values :
 #    1 : Riemann
@@ -49,25 +42,31 @@ xmin
 xmax
 1.0
 NCells
-100
+512
+
+# Possible values
+#    1 : Base
+#    2 : CV
+#    3 : Proj
+Method
+2
 
 # Possible values
 #    1 : Rusanov
 #    2 : HLL
-NumericalFlux
+NumFlux
 1
 
 # Possible values
 #    1 : Explicit Euler
-#    2 : Heun
 EnergyScheme
 1
 
 emin
-1.0
+1.8
 emax
 2.0
 EnergyStep
-0.05
+0.0005
 CFL
 0.8

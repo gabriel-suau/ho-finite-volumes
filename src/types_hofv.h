@@ -23,22 +23,22 @@ enum HOFV_Format {
   HOFV_FMT_VTK
 };
 
-enum HOFV_Model {
-  HOFV_MOD_None,
-  HOFV_MOD_Base,
-  HOFV_MOD_CV,
-  HOFV_MOD_Proj
+enum HOFV_Method {
+  HOFV_MET_None,
+  HOFV_MET_Base,
+  HOFV_MET_CV,
+  HOFV_MET_Proj
+};
+
+enum HOFV_NumFLux {
+  HOFV_NF_None,
+  HOFV_NF_Rus,
+  HOFV_NF_HLL
 };
 
 enum HOFV_TimeScheme {
   HOFV_TS_None,
   HOFV_TS_EE
-};
-
-enum HOFV_NumFlux {
-  HOFV_NF_None,
-  HOFV_NF_Rusanov,
-  HOFV_NF_HLL
 };
 
 enum HOFV_TestCase {
@@ -58,13 +58,14 @@ typedef struct {
   char *outdir;
   int saveFTOnly;
   int saveFreq;
-  int model;
+  int method;
+  int numflux;
   int tcase;
   double xmin, xmax, dx;
   int nx;
-  int numflux;
   int escheme;
   double emin, emax, de, cfl;
+  double de_over_dx;
   int left_bc, right_bc;
 } HOFV_Info;
 
